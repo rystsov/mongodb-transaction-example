@@ -1,6 +1,8 @@
-package com.twitter.rystsov;
+package com.twitter.rystsov.engine;
 
 import com.mongodb.DBObject;
+import com.twitter.rystsov.engine.Db;
+import com.twitter.rystsov.engine.Kv;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +30,7 @@ public class Transaction {
         Set<Kv.KvEntity> altered = new HashSet<Kv.KvEntity>();
         for (Kv.KvEntity entity : log) {
             altered.add(
-                db.update(entity)
+                    db.update(entity)
             );
         }
         // if this operation pass, tx will be committed

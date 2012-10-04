@@ -1,4 +1,4 @@
-package com.twitter.rystsov;
+package com.twitter.rystsov.engine;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
