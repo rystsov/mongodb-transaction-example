@@ -2,6 +2,9 @@ package com.twitter.rystsov;
 
 import com.mongodb.*;
 import com.mongodb.util.JSON;
+import com.twitter.rystsov.engine.Db;
+import com.twitter.rystsov.engine.Kv;
+import com.twitter.rystsov.engine.Transaction;
 
 import java.net.UnknownHostException;
 
@@ -11,41 +14,6 @@ import java.net.UnknownHostException;
  */
 public class App 
 {
-
-
-    static void init(DBCollection accounts) {
-        BasicDBObject gov = new BasicDBObject();
-	    gov.put("name", "gov");
-        gov.put("version", 0);
-		gov.put("value", 600);
-        gov.put("updated", null);
-        accounts.insert(gov);
-
-        BasicDBObject roc = new BasicDBObject();
-	    roc.put("name", "roc");
-        roc.put("version", 0);
-		roc.put("value", 100);
-        roc.put("updated", null);
-        accounts.insert(roc);
-    }
-
-    static void change(DBCollection accounts) {
-        BasicDBObject query;
-
-        query = new BasicDBObject();
-	    query.put("name", "gov");
-        DBObject gov = accounts.findOne(query);
-
-        query = new BasicDBObject();
-	    query.put("_id", gov.get("_id"));
-        query.put("version", gov.get("version"));
-
-        gov.put("version", ((Integer)gov.get("version")) + 1);
-        gov.put("value", 700);
-
-        accounts.update(query, gov);
-    }
-
     public static void main( String[] args ) throws UnknownHostException {
         Mongo mongo = new Mongo("localhost", 27017);
         mongo.setWriteConcern(WriteConcern.SAFE);
@@ -54,6 +22,7 @@ public class App
 
         Db db = new Db(accounts);
 
+        // init
         Kv.KvEntity roc = db.create((DBObject) JSON.parse("{ name : 'roc', balance : 100 }"));
         Kv.KvEntity gov = db.create((DBObject) JSON.parse("{ name : 'gov', balance : 700 }"));
 

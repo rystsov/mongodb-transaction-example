@@ -1,10 +1,6 @@
 package com.twitter.rystsov.engine;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.WriteResult;
-import com.twitter.rystsov.Kv;
 
 /**
  * User: Denis Rystsov

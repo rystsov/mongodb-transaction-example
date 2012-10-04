@@ -23,21 +23,16 @@ public class Transaction {
     public void change(Kv.KvEntity entity, DBObject value) {
         entity.tx = tx.id;
         entity.updated = value;
-        log.add(entity);
+
+        log.add(db.update(entity));
     }
 
     public void commit() {
-        Set<Kv.KvEntity> altered = new HashSet<Kv.KvEntity>();
-        for (Kv.KvEntity entity : log) {
-            altered.add(
-                    db.update(entity)
-            );
-        }
         // if this operation pass, tx will be committed
         db.delete(tx);
         // tx is committed, this is just a clean up
         try {
-            for (Kv.KvEntity entity : altered) {
+            for (Kv.KvEntity entity : log) {
                 entity.value = entity.updated;
                 entity.updated = null;
                 entity.tx = null;
