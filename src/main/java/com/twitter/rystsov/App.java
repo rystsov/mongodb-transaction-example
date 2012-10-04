@@ -19,16 +19,17 @@ public class App
         mongo.setWriteConcern(WriteConcern.SAFE);
         DB bank = mongo.getDB("bank");
         DBCollection accounts = bank.getCollection("accounts");
+        DBCollection txs = bank.getCollection("txs");
 
-        Db db = new Db(accounts);
+        Db db = new Db();
 
         // init
-        Kv.KvEntity roc = db.create((DBObject) JSON.parse("{ name : 'roc', balance : 100 }"));
-        Kv.KvEntity gov = db.create((DBObject) JSON.parse("{ name : 'gov', balance : 700 }"));
+        Kv.KvEntity roc = db.create(accounts, (DBObject) JSON.parse("{ name : 'roc', balance : 100 }"));
+        Kv.KvEntity gov = db.create(accounts, (DBObject) JSON.parse("{ name : 'gov', balance : 700 }"));
 
-        Transaction transaction = new Transaction(db, db.create(null));
-        transaction.change(roc, (DBObject) JSON.parse("{ name : 'roc', balance : 50 }"));
-        transaction.change(gov, (DBObject) JSON.parse("{ name : 'gov', balance : 750 }"));
-        transaction.commit();
+        Transaction transaction = new Transaction(db, db.create(txs, null));
+        transaction.change(accounts, roc, (DBObject) JSON.parse("{ name : 'roc', balance : 50 }"));
+        transaction.change(accounts, gov, (DBObject) JSON.parse("{ name : 'gov', balance : 750 }"));
+        transaction.commit(txs);
     }
 }

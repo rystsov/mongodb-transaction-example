@@ -17,13 +17,8 @@ public class Kv {
         public Object tx;
     }
 
-    private final DBCollection storage;
 
-    public Kv(DBCollection storage) {
-        this.storage = storage;
-    }
-
-    public KvEntity create(DBObject value) {
+    public KvEntity create(DBCollection storage, DBObject value) {
         KvEntity entity = new KvEntity();
         entity.version = 0;
         entity.value = value;
@@ -43,7 +38,7 @@ public class Kv {
         return entity;
     }
 
-    public KvEntity update(KvEntity entity) {
+    public KvEntity update(DBCollection storage, KvEntity entity) {
         int version = (Integer)entity.version;
 
         DBObject query = new BasicDBObject();
@@ -65,7 +60,7 @@ public class Kv {
         return entity;
     }
 
-    public KvEntity get(Object id) {
+    public KvEntity get(DBCollection storage, Object id) {
         KvEntity entity = new KvEntity();
         entity.id = id;
 
@@ -80,7 +75,7 @@ public class Kv {
         return entity;
     }
 
-    public void delete(KvEntity entity) {
+    public void delete(DBCollection storage, KvEntity entity) {
         DBObject query = new BasicDBObject();
         query.put("_id", entity.id);
         query.put("version", entity.version);

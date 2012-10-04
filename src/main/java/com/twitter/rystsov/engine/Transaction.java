@@ -1,10 +1,13 @@
 package com.twitter.rystsov.engine;
 
+import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.twitter.rystsov.engine.Db;
 import com.twitter.rystsov.engine.Kv;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -13,30 +16,31 @@ import java.util.Set;
 public class Transaction {
     private final Kv.KvEntity tx;
     private final Db db;
-    private Set<Kv.KvEntity> log = new HashSet<Kv.KvEntity>();
+
+    private Map<Kv.KvEntity, DBCollection> log = new HashMap<Kv.KvEntity, DBCollection>();
 
     public Transaction(Db db, Kv.KvEntity tx) {
         this.tx = tx;
         this.db = db;
     }
 
-    public void change(Kv.KvEntity entity, DBObject value) {
+    public void change(DBCollection storage, Kv.KvEntity entity, DBObject value) {
         entity.tx = tx.id;
         entity.updated = value;
 
-        log.add(db.update(entity));
+        log.put(db.update(storage, entity), storage);
     }
 
-    public void commit() {
+    public void commit(DBCollection txStorage) {
         // if this operation pass, tx will be committed
-        db.delete(tx);
+        db.delete(txStorage, tx);
         // tx is committed, this is just a clean up
         try {
-            for (Kv.KvEntity entity : log) {
+            for (Kv.KvEntity entity : log.keySet()) {
                 entity.value = entity.updated;
                 entity.updated = null;
                 entity.tx = null;
-                db.update(entity);
+                db.update(log.get(entity), entity);
             }
         } catch (Exception e) { }
     }
