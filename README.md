@@ -1,14 +1,11 @@
-Делаем полноценные транзакции в MongoDB
+## Делаем полноценные транзакции в MongoDB
 
-ongoDB — замечательная база данных, которая становиться все популярнее в последнее время. Все больше людей с SQL опытом начинают её использовать, и один и первых вопросов, который у них возникает: MongoDB transactions?.
+MongoDB — замечательная база данных, которая становиться все популярнее в последнее время. Все больше людей с SQL опытом начинают её использовать, и один и первых вопросов, который у них возникает: [MongoDB transactions?](http://stackoverflow.com/questions/2655251/mongodb-transactions)
 
-Если поверить людям со stackoverflow, то все плохо.
-
-    MongoDB doesn't support complex multi-document transactions. If that is something you absolutely need it probably isn't a great fit for you.
-
-    If transactions are required, perhaps NoSQL is not for you. Time to go back to ACID relational databases.
-
-    MongoDB does a lot of things well, but transactions is not one of those things.
+Если поверить людям со stackoverflow, то все плохо:
+- MongoDB doesn't support complex multi-document transactions. If that is something you absolutely need it probably isn't a great fit for you.
+- If transactions are required, perhaps NoSQL is not for you. Time to go back to ACID relational databases.
+- MongoDB does a lot of things well, but transactions is not one of those things.
 
 Но мы не поверим и реализуем полноценные транзакции (ACID и lock-free). Ниже будет рассказ о том, как эти транзакции работают, а тем, кому не терпиться посмотреть код — добро пожаловать на GitHub (осторожно, java).
 
