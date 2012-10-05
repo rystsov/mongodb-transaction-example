@@ -20,15 +20,15 @@ want to implement it on your own.
 
 ### Data model
 
-В отличии от многих других NoSQL решений, MongoDB поддерживает compare-and-set. Именно поддержка CAS 
-позволяет добавить ACID транзакции. Если вы используете любое другое NoSQL хранилище с поддержкой CAS 
-(например, HBase, Project Voldemort или ZooKeeper), то описанный подход можно применить и там.
+One of the features that differs MongoDB from the other NoSQL solutions is compare-and-set.
+This is execty what we need to add ACID transactions to MongoDB. If you are using another NoSQL solution
+that supports CAS (like HBase, Project Voldemort or ZooKeeper) you can use this approach too.
 
-> **Что такое CAS**
+> **How can I use CAS**
 
-> Это механизм, который гарантирует отказ в изменении объекта, если с момента последнего чтения объект 
-был изменен другим клиентом. Знакомый всем пример - система контроля версий, которая откажет вам в коммите, 
-если ваш коллега успел закомититься раньше.
+> This is a mechanism that prevent updating of a object if the object has been changed by another client after
+you read object but just before you are tring to update it. That must be familiar to you if you have ever used a 
+version control system.
 
 
 Собственно все объекты, которые мы хотим изменять в транзакции должны быть под защитой CAS, это влияет на 
