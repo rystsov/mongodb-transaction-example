@@ -1,10 +1,8 @@
-## Делаем полноценные транзакции в MongoDB
+## ACID transactions in MongoDB
 
-MongoDB — замечательная база данных, которая становиться все популярнее в последнее время. 
-Все больше людей с SQL опытом начинают её использовать, и один и первых вопросов, который у 
-них возникает: [MongoDB transactions?](http://stackoverflow.com/questions/2655251/mongodb-transactions)
+It seems that MongoDB doesn't support transaction. There are a lot of similar answers to questions
+related to transactions and MongoDB:
 
-Если поверить людям со stackoverflow, то все плохо:
 > MongoDB doesn't support complex multi-document transactions. If that is something you absolutely 
 need it probably isn't a great fit for you.
 
@@ -12,10 +10,15 @@ need it probably isn't a great fit for you.
 
 > MongoDB does a lot of things well, but transactions is not one of those things.
 
-Но мы не поверим и реализуем полноценные транзакции (ACID и lock-free). Ниже будет рассказ о том, 
-как эти транзакции работают, а тем, кому не терпиться посмотреть код — добро пожаловать на GitHub (осторожно, java).
+It would be really sad if that were true. But actually MongoDB provides all abilities to implement ACID and 
+lock-free transactions on the client side. 
 
-### Модель данных
+This repository contains a program that uses those abilities and this document describes the algorithm if you
+want to implement it on your own. 
+
+My language of choise is Java, so sory if you were expecting something else.
+
+### Data model
 
 В отличии от многих других NoSQL решений, MongoDB поддерживает compare-and-set. Именно поддержка CAS 
 позволяет добавить ACID транзакции. Если вы используете любое другое NoSQL хранилище с поддержкой CAS 
