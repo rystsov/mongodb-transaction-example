@@ -1,7 +1,7 @@
 ## ACID transactions in MongoDB
 
 It seems that MongoDB doesn't support transaction. There are a lot of similar answers to questions
-related to transactions and MongoDB:
+related to transactions in MongoDB:
 
 > MongoDB doesn't support complex multi-document transactions. If that is something you absolutely 
 need it probably isn't a great fit for you.
@@ -16,7 +16,7 @@ lock-free transactions on the client side.
 This repository contains a program that uses those abilities and this document describes the algorithm if you
 want to implement it on your own. 
 
-My language of choise is Java, so sory if you were expecting something else.
+*My language of choise is Java, so sory if you were expecting something else.*
 
 ### Data model
 
