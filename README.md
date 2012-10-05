@@ -26,33 +26,32 @@ that supports CAS (like HBase, Project Voldemort or ZooKeeper) you can use this 
 
 > **How can I use CAS**
 
-> This is a mechanism that prevent updating of a object if the object has been changed by another client after
-you read object but just before you are tring to update it. That must be familiar to you if you have ever used a 
-version control system.
+> This is a mechanism that prevents updating of an object if the object has been changed by another client after
+you read object but before you are tring to update it. That must be familiar to you if you have ever used a 
+version control system and your colleague succeeded to commit before you.
 
-
-Собственно все объекты, которые мы хотим изменять в транзакции должны быть под защитой CAS, это влияет на 
-модель данных. В начале рассмотрим, как может выглядеть модель счета и операция изменения модели без зашиты CAS. 
+Suppose we want to design a model for bank account, there are a one of possible data stractures and a operation to 
+change it.
 
 ```javascript
-// модель счета
+// bank account
 var gov = {
   _id : ObjectId(".."),
   name : "gov",
   balance : 600
 }
-// изменение счета
+// a changing of an account
 db.accounts.update( 
   { _id:ObjectId("...") }, 
   { name:"gov", balance:550 }
 );
 ```
 
-Теперь представим, что мы хотим защитить наш счет от одновременного изменения несколькими потоками. 
-Как изменяться наша модель и операции работы с ней.
+Obviously this model ignores a problem of concurrent modification described above, so there is a possibility of
+a client overwrites a version of object that he hasn't seen. Let's fix it with a CAS.
 
 ```javascript
-// модель счета
+// CAS guarded bank account
 var gov = {
   _id : ObjectId(".."),
   version : 0,
@@ -61,7 +60,7 @@ var gov = {
     balance : 600
   }
 }
-// изменение счета
+// a changing of an account with respect to version
 db.accounts.update({ 
     _id: ObjectId("..."), version: 0
   },{ 
