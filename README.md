@@ -16,7 +16,8 @@ lock-free transactions on the client side.
 This repository contains a program that uses those abilities and this document describes the algorithm if you
 want to implement it on your own. 
 
-*My language of choise is Java, so sory if you were expecting something else.*
+*My language of choise is Java, so sorry if you were expecting something else. Also English is not my native so
+this text might be full of grammar errors*
 
 ### Data model
 
