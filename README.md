@@ -16,6 +16,9 @@ lock-free transactions on the client side.
 This repository contains a program that uses those abilities and this document describes the algorithm if you
 want to implement it on your own. 
 
+<b>Durability is provided as long as the storage provides it, in case of MongoDB that means that journaling must 
+be turned on.</b>
+
 *My language of choice is Java, so sorry if you were expecting something else. Also English is not my native so
 this text might be full of grammar errors*
 
@@ -163,3 +166,4 @@ We have added transactions to MongoDB. But if you want to use it you should reme
 - we must read only from master
 - transactions are optimistic with all its pros and cons
 - to change n object there are 2n+2 database queries
+- because of journaling it is slow 
