@@ -47,7 +47,7 @@ db.accounts.update(
 );
 ```
 
-Obviously this model ignores a problem of concurrent modification described above, so there is a possibility of
+Obviously this model ignores the problem of concurrent modification described above, so there is a possibility that
 a client overwrites a version of object that he hasn't seen. Let's fix it with a CAS.
 
 ```javascript
@@ -69,12 +69,16 @@ db.accounts.update({
 });
 ```
 
-Надеюсь данного примера достаточно, чтобы понять как нужно изменить работу с базой, чтобы 
-защищать данный с помощью CAS.
+The new field "version" was added, also fields "name" and "balance" were extracted to subobject in order to separate
+business and utility data.
 
-**Далее, я не буду акцентировать внимание на том, что у объекта есть версия, и что любое изменение 
-объекта проходит с учетом его версии, но это нужно помнить и понимать, что любое изменение объекта 
-может вылетить с ошибкой из-за конкурентного доступа.**
+Since our model is CAS guarded we should check that any our change to any object will be accepted, hopefully
+MongoDB returns the number of record affected by the change, so we can check whether our object was updated or 
+update was refused due to a concurrent modification.
+
+**Let's assume that any of our object has version and any modification to an object is procceeded 
+with respect to that version. Hereinafter I omit that but you should remember that any modification
+to any object can be refused.**
 
 На самом деле добавление версии — это не все изменения, которые нужно провести над моделью, чтобы 
 она поддерживала транзакции, полностью измененная модель выглядит так:
