@@ -166,4 +166,4 @@ We have added transactions to MongoDB. But if you want to use it you should reme
 - we must read only from master
 - transactions are optimistic with all its pros and cons
 - to change n object there are 2n+2 database queries
-- because of journaling it is slow 
+- it is slow because of journaling
