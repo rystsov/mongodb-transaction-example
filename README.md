@@ -16,22 +16,22 @@ lock-free transactions on the client side.
 This repository contains a program that uses those abilities and this document describes the algorithm if you
 want to implement it on your own. 
 
-*My language of choise is Java, so sorry if you were expecting something else. Also English is not my native so
+*My language of choice is Java, so sorry if you were expecting something else. Also English is not my native so
 this text might be full of grammar errors*
 
 ### Data model
 
 One of the features that differs MongoDB from the other NoSQL solutions is compare-and-set.
-This is execty what we need to add ACID transactions to MongoDB. If you are using another NoSQL solution
+This is exectly what we need to add ACID transactions to MongoDB. If you are using another NoSQL solution
 that supports CAS (like HBase, Project Voldemort or ZooKeeper) you can use this approach too.
 
 > **How can I use CAS**
 
 > This is a mechanism that prevents updating of an object if the object has been changed by another client after
-you read object but before you are tring to update it. That must be familiar to you if you have ever used a 
+you read object but before you are trying to update it. That must be familiar to you if you have ever used a 
 version control system and your colleague succeeded to commit before you.
 
-Suppose we want to design a model for bank account, there are a one of possible data stractures and a operation to 
+Suppose we want to design a model for bank account, there are a one of possible data structures and a operation to 
 change it.
 
 ```javascript
@@ -77,7 +77,7 @@ Since our model is CAS guarded we should check that any our change to any object
 MongoDB returns the number of record affected by the change, so we can check whether our object was updated or 
 update was refused due to a concurrent modification.
 
-**Let's assume that any of our object has version and any modification to an object is procceeded 
+**Let's assume that any of our object has version and any modification to an object is proceeded 
 with respect to that version. Hereinafter I omit that but you should remember that any modification
 to any object can be refused.**
 
@@ -98,9 +98,9 @@ var gov = {
 ```
 
 Fields "updated" and "tx" were added. Just like the "version" field those fields are utility too which are 
-being used during transaction. The structure of "updated" is equel to "value" or null. It is representing an 
+being used during transaction. The structure of "updated" is equal to "value" or null. It is representing an 
 altered version of object during transaction. "tx" is an ObjectId-typed object, it is a foreign key for "_id" 
-field of an object representing transaction. An object representing transaction is also CAS guadred.
+field of an object representing transaction. An object representing transaction is also CAS guarded.
 
 ### The algorithm
 
@@ -121,7 +121,7 @@ return to them after I introduce the algorithm and expect you to say something l
 - when read falls we must reread
 - if a transaction falls before commit we should start new transaction
 - if a transaction falls during commit we should check if it has passed 
-  and it if hasn't we should repeat the whole thansacion
+  and it if hasn't we should repeat the whole thansaction
 - if a transaction has passed then the tx object is removed
 
 #### States
@@ -129,11 +129,11 @@ return to them after I introduce the algorithm and expect you to say something l
 An object has a **clean state** when a transaction has successfully passed: its "value" contains new data 
 and "updated" and "tx" are null.
 
-An object has a **dirty uncommitted state** during transaction: "updated" contains new version, "tx" reffers to
+An object has a **dirty uncommitted state** during transaction: "updated" contains new version, "tx" refers to
 object representing transaction and that object exists.
 
 The third state is a **dirty committed state** it describe case when transaction is committed but hasn't yet clean
-its utility data yet: "value" and "updated" contains new version of an object, "tx" reffers to
+its utility data yet: "value" and "updated" contains new version of an object, "tx" refers to
 object representing transaction, but that object is deleted.
 
 #### Transaction
@@ -159,7 +159,7 @@ use them to prove ACID.
 ### Conclusion
 
 We have added transactions to MongoDB. But if you want to use it you should remember that:
-- we must set up MongoDB to wait util writes are replicated to quorum
+- we must set up MongoDB to wait until writes are replicated to quorum
 - we must read only from master
 - transactions are optimistic with all its pros and cons
-- for changing n object there are 2n+2 database queries
+- to change n object there are 2n+2 database queries
