@@ -103,38 +103,39 @@ field of an object representing transaction. An object representing transaction 
 
 ### The algorithm
 
-Объяснить алгоритм просто, объяснить его так, что его корректность была очевидна, сложнее; 
-поэтому придеться то, что некоторыми сущностями я буду оперировать до того, как их определю.
+It is easy to describe an algorithm, but it is harder to describe an algorithm in a way that its correctness 
+is obvious. So at first I'll make some statements, defs and properties about the algorithm. I expect you to
+return to them after I introduce the algorithm and expect you to say something like "Oh, now I see that is true".
 
-Ниже идут верные утверждения, определения и свойства из которых позже будет составлен алгоритм.
+- "value" always contains a state that was actual sometime in the past
+- a read operation can change data in the base
+- the read operation is idempotent
+- a object can be in one of three states: clean — c, dirty uncommitted — d, dirty committed — dc
+- when object start participating in transaction it must be in the "c" state
+- possible transitions between states: c→d, d→c, d→dc, dc→c
+- possible transitions during transaction: c→d, d→dc, dc→c
+- a possible transition during reads: d→c
+- if there was an d→c transition, the transaction initiated c→d transition must fall on commit
+- after each operation the database has consistent state
+- when read falls we must reread
+- if a transaction falls before commit we should start new transaction
+- if a transaction falls during commit we should check if it has passed 
+  and it if hasn't we should repeat the whole thansacion
+- if a transaction has passed then the tx object is removed
 
-- value всегда содержит состояние, которое было верным на какой-то момент в прошлом
-- операция чтения может изменять данные в базе
-- операция чтения идемпотентна
-- объект может быть в трех состояниях: чистое — c, грязное незакомиченное — d, грязное закомиченное — dc
-- в транзакции изменяются только объекты в состоянии: c
-- возможные переходы между состояниями: c →d, d→c, d→dc, dc→c
-- переходы инициированные транзакцей: c →d, d→dc, dc→c
-- возможный переход при чтении: d→c
-- если произошел переход d→c, то транзакция, внутри которой был переход c →d, упадет при коммите
-- любая операция при работе с базой может упасть
-- упавшию операцию чтения нужно повторить
-- при упавшей записи нужно начать новую транзакцию
-- при упавшем коммите нужно проверить прошел ли он, если нет — повторить транзакцию заново
-- транзакция прошла, если объект представляющий транзакцию (_id = tx) удален
+#### States
 
-#### Состояния
+An object has a **clean state** when a transaction has successfully passed: its "value" contains new data 
+and "updated" and "tx" are null.
 
-**Чистое состояние** описывает объект после успешной транзакции: value содержит данные, а upated и tx — null.
+An object has a **dirty uncommitted state** during transaction: "updated" contains new version, "tx" reffers to
+object representing transaction and that object exists.
 
-**Грязное незакомиченное состояние** описывает объект в момент транзакции, updated содержит новую 
-версию, а tx — _id объекта представляющего транзакцию, этот объект существует.
+The third state is a **dirty committed state** it describe case when transaction is committed but hasn't yet clean
+its utility data yet: "value" and "updated" contains new version of an object, "tx" reffers to
+object representing transaction, but that object is deleted.
 
-**Грязное закомиченное состояние** описывает объект после успешной транзакции, но которя упала до того, 
-как успела подчистить за собой, updated содержит новую версию, tx — _id объекта представляющего транзакцию, 
-но сам объект уже удален.
-
-#### Транзакция
+#### Transaction
 
 1. Читаем объекты, которые участвуют в транзакции
 2. Создаем объект представляющий транзакцию (tx)
@@ -142,7 +143,7 @@ field of an object representing transaction. An object representing transaction 
 4. Удаляем объект tx
 5. Пишем в value каждого объекта значение из updated, а tx и updated обнуляем
 
-#### Чтение
+#### Read
 
 1. Читаем объект
 2. Если он чистый — возвращаем его
