@@ -137,28 +137,28 @@ object representing transaction, but that object is deleted.
 
 #### Transaction
 
-1. Читаем объекты, которые участвуют в транзакции
-2. Создаем объект представляющий транзакцию (tx)
-3. Пишем в updated каждого объекта новую значение, а в tx — tx._id
-4. Удаляем объект tx
-5. Пишем в value каждого объекта значение из updated, а tx и updated обнуляем
+1. Read objects that are participating in transaction
+2. Create a new object representing transaction (tx) the transaction, it may have empty "value"
+3. For each object update its "updated" field to new version and "tx" to tx._id
+4. Remove tx object
+5. For each object write to "value" its "updated" value and set its "updated" and "tx" to null
 
 #### Read
 
-1. Читаем объект
-2. Если он чистый — возвращаем его
-3. Если грязный закомиченный — пишем в value значение из updated, а tx и updated обнуляем
-4. Если грязное незакомиченный — изменяем версию tx, обнуляем updated и tx
-5. Переходим на шаг №1
+1. Read object
+2. If it is clean then return it
+3. If it is dirty committed then write to "value" its "updated" value and set its "updated" and "tx" to null
+4. If it is dirty uncommitted then change "version" of it's corresponding tx object and set its "updated" 
+   and "tx" to null
+5. Repeat step №1
 
-Для тех кому теперь не очивидна корректность, домашнее задание — проверить, что выполняются все 
-свойства и утверждения, а затем используя их доказать ACID ☺
+I think it pretty easy to prove ACID properties - just check that all statement I made above are true and 
+use them to prove ACID.
 
-### Заключение
+### Conclusion
 
-Мы добавили в MongoDB транзакции, а ребята со stackoverflow оказались не компетентны. На самом деле 
-у наших транзакций есть несколько свойств, о которых нужно помнить:
-- при записи должен достигаться кворум (см. w) чтобы переживать падение машин
-- транзакции оптимистические, проэтому при изменении объекта с высокой частотой из 
-  разных потоков ихлучше не использовать
-- для изменения n объектов в одной транзакции используется 2n+2 запросов 
+We have added transactions to MongoDB. But if you want to use it you should remember that:
+- we must set up MongoDB to wait util writes are replicated to quorum
+- we must read only from master
+- transactions are optimistic with all its pros and cons
+- for changing n object there are 2n+2 database queries
