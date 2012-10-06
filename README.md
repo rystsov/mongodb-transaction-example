@@ -80,8 +80,8 @@ update was refused due to a concurrent modification.
 with respect to that version. Hereinafter I omit that but you should remember that any modification
 to any object can be refused.**
 
-На самом деле добавление версии — это не все изменения, которые нужно провести над моделью, чтобы 
-она поддерживала транзакции, полностью измененная модель выглядит так:
+Actually adding the "version" field to the model is not enough to introduce transaction. We must alter our model
+one more time:
 
 ```javascript
 var gov = {
@@ -96,12 +96,12 @@ var gov = {
 }
 ```
 
-Добавились поля — updated и tx. Это служебные данные, которые используются в процессе транзакции. 
-По структуре updated совпадает с value, по смыслу — это изменная версия объекта, которая превратиться 
-в value, если транзакция пройдет; tx — это объект класса ObjectId — foreign key для _id объекта, 
-представляющий транзакцию. Объект представляющий транзакцию так же находиться под защитой CAS.
+Fields "updated" and "tx" were added. Just like the "version" field those fields are utility too which are 
+being used during transaction. The structure of "updated" is equel to "value" or null. It is representing an 
+altered version of object during transaction. "tx" is an ObjectId-typed object, it is a foreign key for "_id" 
+field of an object representing transaction. An object representing transaction is also CAS guadred.
 
-### Алгоритм
+### The algorithm
 
 Объяснить алгоритм просто, объяснить его так, что его корректность была очевидна, сложнее; 
 поэтому придеться то, что некоторыми сущностями я буду оперировать до того, как их определю.
