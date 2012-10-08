@@ -16,7 +16,7 @@ lock-free transactions on the client side.
 This repository contains a program that uses those abilities and this document describes the algorithm if you
 want to implement it on your own. 
 
-<b>Actually this project demonstratea a way of adding MVCC-style transactions to any CAS-enabled storage. 
+<b>Actually this project demonstrates a way of adding MVCC-style transactions to any CAS-enabled storage. 
 MongoDB is just an example. Durability is provided as long as the storage provides it, in case of MongoDB 
 that means that journaling must be turned on.</b>
 
