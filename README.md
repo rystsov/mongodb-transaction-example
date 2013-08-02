@@ -168,3 +168,4 @@ We have added transactions to MongoDB. But if you want to use it you should reme
 - transactions are optimistic with all its pros and cons
 - to change n object there are 2n+2 database queries
 - it is slow because of journaling
+- it doesn't work for some mongodb deployment schemas since mongodb can rollback changes during reunion after partitions
