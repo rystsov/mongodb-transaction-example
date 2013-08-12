@@ -11,7 +11,7 @@ need it probably isn't a great fit for you.
 > MongoDB does a lot of things well, but transactions is not one of those things.
 
 It would be really sad if that were true. But actually MongoDB provides all abilities to implement 
-lock-free transactions on the client side. Under transaction I atomicity of specified block of changes.
+lock-free transactions on the client side. Under transaction I atomicity of specified changes.
 
 This repository contains a program that uses those abilities and this document describes the algorithm if you
 want to implement it on your own. 
@@ -159,7 +159,7 @@ object representing transaction, but that object is deleted.
 5. Repeat step №1
 
 I think it pretty easy to prove transaction properties - just check that all statement I made above are true and 
-use them to prove it.
+use them to prove atomicity.
 
 ### Conclusion
 
