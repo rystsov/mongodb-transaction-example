@@ -1,4 +1,4 @@
-## ACID transactions in MongoDB
+## Optimistic transactions in MongoDB
 
 It seems that MongoDB doesn't support transaction. There are a lot of similar answers to questions
 related to transactions in MongoDB:
@@ -10,8 +10,8 @@ need it probably isn't a great fit for you.
 
 > MongoDB does a lot of things well, but transactions is not one of those things.
 
-It would be really sad if that were true. But actually MongoDB provides all abilities to implement ACID and 
-lock-free transactions on the client side. 
+It would be really sad if that were true. But actually MongoDB provides all abilities to implement 
+lock-free transactions on the client side. Under transaction I atomicity of specified block of changes.
 
 This repository contains a program that uses those abilities and this document describes the algorithm if you
 want to implement it on your own. 
@@ -27,7 +27,7 @@ this text might be full of grammar errors*
 ### Data model
 
 One of the features that differs MongoDB from the other NoSQL solutions is compare-and-set.
-This is exectly what we need to add ACID transactions to MongoDB. If you are using another NoSQL solution
+This is exectly what we need to add transactions to MongoDB. If you are using another NoSQL solution
 that supports CAS (like HBase, Project Voldemort or ZooKeeper) you can use this approach too.
 
 > **How can I use CAS**
@@ -158,8 +158,8 @@ object representing transaction, but that object is deleted.
    and "tx" to null
 5. Repeat step №1
 
-I think it pretty easy to prove ACID properties - just check that all statement I made above are true and 
-use them to prove ACID.
+I think it pretty easy to prove transaction properties - just check that all statement I made above are true and 
+use them to prove it.
 
 ### Conclusion
 
