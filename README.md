@@ -121,11 +121,11 @@ return to them after I introduce the algorithm and expect you to say something l
 - possible transitions between states: c→d, d→c, d→dc, dc→c
 - possible transitions during transaction: c→d, d→dc, dc→c
 - a possible transition during reads: d→c
-- if there was an d→c transition, the transaction initiated c→d transition must fall on commit
+- if there was an d→c transition, the transaction initiated c→d transition must fail on commit
 - after each operation the database has consistent state
-- when read falls we must reread
-- if a transaction falls before commit we should start new transaction
-- if a transaction falls during commit we should check if it has passed 
+- when read fails we must reread
+- if a transaction fails before commit we should start new transaction
+- if a transaction fails during commit we should check if it has passed 
   and it if hasn't we should repeat the whole thansaction
 - if a transaction has passed then the tx object is removed
 
